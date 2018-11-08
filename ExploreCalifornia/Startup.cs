@@ -23,9 +23,15 @@ namespace ExploreCalifornia
 			if (env.IsDevelopment())
 			{
 				app.UseDeveloperExceptionPage();
+			} else
+			{
+				app.UseExceptionHandler("/error.html");
 			}
 
-			app.UseFileServer();
+			app.Run(async (context) =>
+			{
+				await context.Response.WriteAsync("Hello World!");
+			});
 		}
 	}
 }
