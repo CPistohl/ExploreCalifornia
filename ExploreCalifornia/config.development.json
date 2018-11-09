@@ -1,3 +1,8 @@
 {
-	"EnableDeveloperExceptions":  true
+	"ConnectionStrings": {
+		"BlogDatacontext": "server=(localdb)\\mssqllocaldb;Database=ExploreCalifornia;Truste_Connection=True;"
+	},
+	"Feature Toggles": {
+		"EnableDeveloperExceptions": true
+	}
 }

@@ -6,6 +6,13 @@ namespace ExploreCalifornia.Controllers
 {
 	public class BlogController : Controller
 	{
+		//private readonly DatabaseContext _database;
+
+		//public BlogController(DatabaseContext database)
+		//{
+		//	_database = database;
+		//}
+
 		public IActionResult Index()
 		{
 			Post[] model = new[]
@@ -30,10 +37,32 @@ namespace ExploreCalifornia.Controllers
 			return View(model);
 		}
 
-		[Route("blog/{year:min(2000)}/{month:range(1,12)}/{key}")]
+		//[Route("Blog/{year:min(2000)}/{month:range(1,12)}/{key}")]
 		public IActionResult Post(int year, int month, string key)
 		{
 			return View();
 		}
+
+		public IActionResult Create()
+		{
+			return View();
+		}
+
+
+		//public IActionResult Create(Post post)
+		//{
+		//	if (!ModelState.IsValid)
+		//	{
+		//		return View();
+		//	}
+		//	post.Author = User.Identity.Name;
+		//	post.Posted = DateTime.Now;
+
+		//	_database.Posts.Add(post);
+		//	_database.SaveChanges();
+
+		//	return View();
+
+		//}
 	}
 }
