@@ -1,12 +1,22 @@
 ﻿@inject ExploreCalifornia.Models.FormattingService Format
 @model ExploreCalifornia.Models.Post
 
-<article>
-	<h1>@Model.Title</h1>
+@{
+	var postParameters = new Dictionary<string, string>
+	{
+		{"year", Model.Posted.Year.ToString() },
+		{"month", Model.Posted.Month.ToString()},
+		{"key", Model.Key.ToString() }
+	};
+}
+
+<article class="blog-post">
+	<!--<h1>@Html.ActionLink(Model.Title, "Post", "Blog", new { year = Model.Posted.Year, month = Model.Posted.Month, key = Model.Key })</h1>-->
+	<h1><a asp-controller="Blog" asp-action="Post" asp-all-route-data="postParameters">@Model.Title</a></h1>
 	<div class="details">
 		Posted <span>@Format.AsReadableString(Model.Posted)</span> by <span>@Model.Author</span>
 	</div>
-	<div class="co">
+	<div class="content">
 		@Model.Body
 	</div>
 </article>

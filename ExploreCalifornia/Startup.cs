@@ -1,10 +1,10 @@
-﻿using ExploreCalifornia.Models;
+﻿using System;
+using ExploreCalifornia.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System;
 
 namespace ExploreCalifornia
 {
@@ -21,31 +21,33 @@ namespace ExploreCalifornia
 				.Build();
 		}
 
-		// This method gets called by the runtime. Use this method to add services to the container.
-		// For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
 		public void ConfigureServices(IServiceCollection services)
 		{
-			services.AddTransient<SpecialsDataContext>();
 			services.AddTransient<FormattingService>();
 
-			services.AddDbContext<DatabaseContext>(options => {
-				var connectionString = configuration.GetConnectionString("BlogDataContext");
+			services.AddTransient(x => new FeatureToggles
+			{
+				EnableDeveloperExceptions =
+					configuration.GetValue<bool>("FeatureToggles:EnableDeveloperExceptions")
+			});
+
+			services.AddDbContext<DatabaseContext>(options =>
+			{
+				string connectionString = configuration.GetConnectionString("DataBaseContext");
 				options.UseSqlServer(connectionString);
 			});
+
 			services.AddMvc();
-			services.AddRouting();
 		}
 
-		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-		public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+		public void Configure(IApplicationBuilder app, IHostingEnvironment env, FeatureToggles features)
 		{
-			if (configuration.GetValue<bool>("FeatureToggles:EnableDeveloperExceptions"))
+			app.UseExceptionHandler("/error.html");
+
+			// configuration.GetValue<bool>("FeatureToggles:EnableDeveloperExceptions")
+			if (features.EnableDeveloperExceptions)
 			{
 				app.UseDeveloperExceptionPage();
-			}
-			else
-			{
-				app.UseExceptionHandler("/error.htm");
 			}
 
 			app.Use(async (context, next) =>
@@ -57,12 +59,13 @@ namespace ExploreCalifornia
 
 				await next();
 			});
-			app.UseStaticFiles();
 
 			app.UseMvc(route =>
 			{
 				route.MapRoute("Default", "{controller=Home}/{action=Index}/{id?}");
 			});
+
+			app.UseFileServer();
 		}
 	}
 }

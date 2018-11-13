@@ -1,20 +1,21 @@
-﻿using ExploreCalifornia.Models;
+﻿using System.Linq;
+using ExploreCalifornia.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ExploreCalifornia.ViewComponents
 {
 	public class MonthlySpecials : ViewComponent
 	{
-		private readonly SpecialsDataContext _specials;
+		private readonly DatabaseContext _databse;
 
-		public MonthlySpecials(SpecialsDataContext specials)
+		public MonthlySpecials(DatabaseContext database)
 		{
-			_specials = specials;
+			_databse = database;
 		}
 
 		public IViewComponentResult Invoke()
 		{
-			var specials = _specials.GetMonthlySpecials();
+			System.Collections.Generic.IEnumerable<Special> specials = _databse.Specials.ToArray();
 			return View(specials);
 		}
 	}

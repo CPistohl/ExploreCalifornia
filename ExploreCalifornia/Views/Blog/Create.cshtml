@@ -1,6 +1,6 @@
 ﻿@model ExploreCalifornia.Models.Post
 @{
-    Layout = "~/Views/Shared/_Layout.cshtml";
+	Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <h2>Create Blog Post</h2>
@@ -21,25 +21,29 @@
 			<label asp-for="Body"></label>
 			<textarea asp-for="Body" class="form-control" placeholder="Blog post content"></textarea>
 			<span asp-validation-for="Body"></span>
-		</p>
-	</form>
-	
-	@*@using (Html.BeginForm())
-	{
-		@Html.ValidationSummary()
-
-		<p>
-			@Html.LabelFor(x => x.Title)
-			@Html.EditorFor(x => x.Title)
-			@Html.ValidationMessageFor(x => x.Title)
-		</p>
-		<p>
-			@Html.LabelFor(x => x.Title)
-			@Html.TextAreaFor(x => x.Body)
 			@Html.ValidationMessageFor(x => x.Body)
 		</p>
 		<p>
 			<button type="submit">Create Post</button>
 		</p>
-	}*@
+	</form>
+
+	@*@using (Html.BeginForm())
+		{
+			@Html.ValidationSummary()
+
+			<p>
+				@Html.LabelFor(x => x.Title)
+				@Html.EditorFor(x => x.Title)
+				@Html.ValidationMessageFor(x => x.Title)
+			</p>
+			<p>
+				@Html.LabelFor(x => x.Title)
+				@Html.TextAreaFor(x => x.Body)
+				@Html.ValidationMessageFor(x => x.Body)
+			</p>
+			<p>
+				<button type="submit">Create Post</button>
+			</p>
+		}*@
 </fieldset>

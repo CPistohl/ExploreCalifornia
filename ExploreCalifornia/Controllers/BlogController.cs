@@ -1,68 +1,61 @@
-﻿using ExploreCalifornia.Models;
+﻿using System;
+using System.Linq;
+using ExploreCalifornia.Models;
 using Microsoft.AspNetCore.Mvc;
-using System;
 
 namespace ExploreCalifornia.Controllers
 {
+	[Route("blog")]
 	public class BlogController : Controller
 	{
-		//private readonly DatabaseContext _database;
+		private readonly DatabaseContext _database;
 
-		//public BlogController(DatabaseContext database)
-		//{
-		//	_database = database;
-		//}
+		public BlogController(DatabaseContext database)
+		{
+			_database = database;
+		}
 
+		[Route("")]
 		public IActionResult Index()
 		{
-			Post[] model = new[]
-			   {
-				new Post
-				{
-					Title = "My blog post",
-					Posted = DateTime.Now,
-					Author = "Connor Pistohl",
-					Body = "This is a great blog post"
-				},
+			var posts = _database.Posts.OrderByDescending(x => x.Posted).Take(5).ToArray();
 
-				new Post
-				{
-					Title = "My second blog post",
-					Posted = DateTime.Now,
-					Author = "Connor Pistohl",
-					Body = "This is ANOTHER great blog post"
-				}
-			};
-
-			return View(model);
+			return View(posts);
 		}
 
-		//[Route("Blog/{year:min(2000)}/{month:range(1,12)}/{key}")]
+		[Route("{year:min(2000)}/{month:range(1,12)}/{key}")]
 		public IActionResult Post(int year, int month, string key)
 		{
-			return View();
+			var post = _database.Posts.FirstOrDefault(x => x.Key == key);
+			return View(post);
 		}
 
+		[HttpGet, Route("create")]
 		public IActionResult Create()
 		{
 			return View();
 		}
 
+		[HttpPost, Route("create")]
+		public IActionResult Create(Post post)
+		{
+			if (!ModelState.IsValid)
+			{
+				return View();
+			}
+			post.Author = User.Identity.Name;
+			post.Posted = DateTime.Now;
 
-		//public IActionResult Create(Post post)
-		//{
-		//	if (!ModelState.IsValid)
-		//	{
-		//		return View();
-		//	}
-		//	post.Author = User.Identity.Name;
-		//	post.Posted = DateTime.Now;
+			_database.Posts.Add(post);
+			_database.SaveChanges();
 
-		//	_database.Posts.Add(post);
-		//	_database.SaveChanges();
+			return RedirectToAction("Post", "Blog", new
+			{
+				year = post.Posted.Year,
+				month = post.Posted.Month,
+				key = post.Key
+			});
 
-		//	return View();
-
-		//}
+		}
 	}
 }
